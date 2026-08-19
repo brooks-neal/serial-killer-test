@@ -551,6 +551,24 @@
       return sum + best;
     }, 0);
 
+    var RESULTS_FORM_URL =
+      "https://docs.google.com/forms/d/e/1FAIpQLSd5C07RPgF3HchtEVPNSZgXkvCAdKoyBO0X-chdkjaLw3rR7Q/formResponse";
+    var RESULTS_FORM_FIELDS = {
+      name: "entry.1031099548",
+      score: "entry.644947629",
+      verdict: "entry.989163981",
+      caseFile: "entry.1886460365"
+    };
+
+    function submitResult(name, pct, verdict, caseNum) {
+      var body = new URLSearchParams();
+      body.set(RESULTS_FORM_FIELDS.name, name);
+      body.set(RESULTS_FORM_FIELDS.score, pct + "%");
+      body.set(RESULTS_FORM_FIELDS.verdict, verdict);
+      body.set(RESULTS_FORM_FIELDS.caseFile, caseNum);
+      fetch(RESULTS_FORM_URL, { method: "POST", mode: "no-cors", body: body }).catch(function () {});
+    }
+
     function rand3() {
       return Math.floor(100 + Math.random() * 900);
     }
@@ -701,6 +719,8 @@
       var tier = tierFor(pct);
       var safeName = escapeHTML(state.name);
 
+      submitResult(state.name, pct, tier.text, caseNumber);
+
       app.innerHTML =
         '<div class="case-status">CASE STATUS: <strong>CLOSED</strong></div>' +
         '<div class="stamp">' +
@@ -716,7 +736,7 @@
         '<button class="btn btn-primary" id="retakeBtn" type="button">RETAKE EVALUATION</button>' +
         '<button class="btn btn-ghost" id="copyBtn" type="button">COPY FILE SUMMARY</button>' +
         "</div>" +
-        '<p class="disclaimer">100% for fun. 0% science. Please don\'t diagnose your coworkers with this.</p>';
+        '<p class="disclaimer">100% for fun. 0% science. This file is retained for departmental records.</p>';
 
       animateThreat(pct);
 
