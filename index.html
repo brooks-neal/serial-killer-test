@@ -557,15 +557,30 @@
       name: "entry.1031099548",
       score: "entry.644947629",
       verdict: "entry.989163981",
-      caseFile: "entry.1886460365"
+      caseFile: "entry.1886460365",
+      q: [
+        "entry.419126718",
+        "entry.1731359385",
+        "entry.495517999",
+        "entry.496828354",
+        "entry.251811745",
+        "entry.45038474",
+        "entry.508925473",
+        "entry.207094618",
+        "entry.1986564754",
+        "entry.1789414006"
+      ]
     };
 
-    function submitResult(name, pct, verdict, caseNum) {
+    function submitResult(name, pct, verdict, caseNum, answers) {
       var body = new URLSearchParams();
       body.set(RESULTS_FORM_FIELDS.name, name);
       body.set(RESULTS_FORM_FIELDS.score, pct + "%");
       body.set(RESULTS_FORM_FIELDS.verdict, verdict);
       body.set(RESULTS_FORM_FIELDS.caseFile, caseNum);
+      for (var i = 0; i < RESULTS_FORM_FIELDS.q.length; i++) {
+        body.set(RESULTS_FORM_FIELDS.q[i], answers[i] || "");
+      }
       fetch(RESULTS_FORM_URL, { method: "POST", mode: "no-cors", body: body }).catch(function () {});
     }
 
@@ -574,7 +589,7 @@
     }
     var caseNumber = rand3() + "-" + rand3();
 
-    var state = { screen: "intro", name: "", current: 0, points: [], locked: false };
+    var state = { screen: "intro", name: "", current: 0, points: [], answers: [], locked: false };
 
     var app = document.getElementById("app");
     var tabLabel = document.getElementById("tabLabel");
@@ -696,6 +711,7 @@
 
       var q = questions[state.current];
       state.points[state.current] = q.options[i].pts;
+      state.answers[state.current] = q.options[i].text;
 
       var buttons = app.querySelectorAll(".option");
       if (buttons[i]) buttons[i].classList.add("option-chosen");
@@ -719,7 +735,7 @@
       var tier = tierFor(pct);
       var safeName = escapeHTML(state.name);
 
-      submitResult(state.name, pct, tier.text, caseNumber);
+      submitResult(state.name, pct, tier.text, caseNumber, state.answers);
 
       app.innerHTML =
         '<div class="case-status">CASE STATUS: <strong>CLOSED</strong></div>' +
@@ -744,6 +760,7 @@
         state.screen = "intro";
         state.current = 0;
         state.points = [];
+        state.answers = [];
         render();
       });
 
