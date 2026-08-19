@@ -342,12 +342,16 @@
 
   .stamp {
     display: inline-block;
+    max-width: 100%;
     font-family: "Bebas Neue", sans-serif;
-    font-size: clamp(1.5rem, 6vw, 2.4rem);
-    letter-spacing: 0.05em;
+    font-size: clamp(1.15rem, 4.2vw, 1.7rem);
+    line-height: 1.15;
+    letter-spacing: 0.03em;
+    text-align: center;
+    text-wrap: balance;
     color: var(--accent);
     border: 4px solid var(--accent);
-    padding: 10px 22px;
+    padding: 12px 20px;
     border-radius: 6px;
     transform: rotate(-6deg);
     opacity: 0.9;
@@ -391,21 +395,6 @@
     height: 100%;
     width: 0%;
     background: var(--accent);
-  }
-
-  .verdict-title {
-    font-family: "Bebas Neue", sans-serif;
-    font-weight: 400;
-    font-size: clamp(1.8rem, 6vw, 2.4rem);
-    margin: 0 0 10px;
-    text-wrap: balance;
-  }
-
-  .verdict-blurb {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 60ch;
-    margin: 0;
   }
 
   .actions {
@@ -548,41 +537,11 @@
     ];
 
     var TIERS = [
-      {
-        max: 20,
-        title: "GOLDEN RETRIEVER",
-        blurb: function (n) {
-          return n + " scored so low we double-checked the pen was working. Aggressively wholesome. Probably waves at strangers' dogs.";
-        }
-      },
-      {
-        max: 40,
-        title: "MOSTLY HARMLESS",
-        blurb: function (n) {
-          return "A few quirks, nothing actionable. " + n + " just really cares how the towels are folded.";
-        }
-      },
-      {
-        max: 60,
-        title: "SUSPICIOUSLY NORMAL",
-        blurb: function (n) {
-          return n + " answered every question exactly the way a totally normal person would. That, detectives note, is the suspicious part.";
-        }
-      },
-      {
-        max: 80,
-        title: "PERSON OF INTEREST",
-        blurb: function (n) {
-          return n + "'s file has been flagged for further review: a disturbingly precise KitKat technique, matching pajama sets, and paper towels used as tactical equipment.";
-        }
-      },
-      {
-        max: 101,
-        title: "CERTIFIED ENIGMA",
-        blurb: function (n) {
-          return "We ran out of questions before we ran out of concerns. " + n + " remains, and will likely always remain, a mystery.";
-        }
-      }
+      { max: 64, text: "It's only a matter of time before you get caught." },
+      { max: 74, text: "How many bodies?" },
+      { max: 84, text: "I'm definitely carrying on the date." },
+      { max: 94, text: "I feel safe, but I'm watching you closely on the date." },
+      { max: 101, text: "Cleared." }
     ];
 
     var MAX_SCORE = questions.reduce(function (sum, q) {
@@ -637,7 +596,7 @@
         '<h1 class="title">THE SERIAL<br>KILLER TEST</h1>' +
         '<p class="lede">A rigorously unscientific psychological evaluation, based entirely on cereal-pouring order, KitKat technique, and vibes.</p>' +
         '<label class="field-label" for="nameInput">SUBJECT NAME</label>' +
-        '<input id="nameInput" class="field" type="text" placeholder="Full name, or alias" autocomplete="off" maxlength="40" value="' +
+        '<input id="nameInput" class="field" type="text" placeholder="Name or Alias" autocomplete="off" maxlength="40" value="' +
         escapeHTML(state.name) +
         '" />' +
         '<button class="btn btn-primary" id="beginBtn" type="button">BEGIN EVALUATION &rarr;</button>' +
@@ -745,20 +704,14 @@
       app.innerHTML =
         '<div class="case-status">CASE STATUS: <strong>CLOSED</strong></div>' +
         '<div class="stamp">' +
-        tier.title +
+        escapeHTML(tier.text) +
         "</div>" +
         '<p class="subject-line">SUBJECT: <strong>' +
         safeName +
         "</strong></p>" +
-        '<div class="threat"><div class="threat-label">THREAT LEVEL</div>' +
+        '<div class="threat"><div class="threat-label">SAFETY RATING</div>' +
         '<div class="threat-number" id="threatNumber">0%</div>' +
         '<div class="threat-track"><div class="threat-fill" id="threatFill"></div></div></div>' +
-        '<h2 class="verdict-title">' +
-        tier.title +
-        "</h2>" +
-        '<p class="verdict-blurb">' +
-        tier.blurb(safeName) +
-        "</p>" +
         '<div class="actions">' +
         '<button class="btn btn-primary" id="retakeBtn" type="button">RETAKE EVALUATION</button>' +
         '<button class="btn btn-ghost" id="copyBtn" type="button">COPY FILE SUMMARY</button>' +
@@ -780,12 +733,10 @@
           caseNumber +
           "\nSUBJECT: " +
           state.name +
-          "\nTHREAT LEVEL: " +
+          "\nSAFETY RATING: " +
           pct +
           "%\nVERDICT: " +
-          tier.title +
-          "\n" +
-          tier.blurb(state.name);
+          tier.text;
 
         var btn = e.currentTarget;
         var original = btn.textContent;
