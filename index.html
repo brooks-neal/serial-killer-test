@@ -1,0 +1,844 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:wght@400;700&display=swap"
+  rel="stylesheet"
+/>
+<title>The Serial Killer Test</title>
+
+<style>
+  :root {
+    --bg: #c9bfa0;
+    --glow: transparent;
+    --surface: #f2ead9;
+    --surface-2: #e7dbbe;
+    --ink: #221d17;
+    --ink-soft: #5a4f3e;
+    --accent: #a32b1f;
+    --accent-ink: #7c2016;
+    --line: rgba(34, 29, 23, 0.22);
+    --shadow: rgba(20, 16, 10, 0.35);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #100e0b;
+      --glow: rgba(255, 199, 120, 0.12);
+      --surface: #ede3cc;
+      --surface-2: #e2d5b4;
+      --accent: #c23b2a;
+      --accent-ink: #8c2a1c;
+      --shadow: rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #100e0b;
+    --glow: rgba(255, 199, 120, 0.12);
+    --surface: #ede3cc;
+    --surface-2: #e2d5b4;
+    --accent: #c23b2a;
+    --accent-ink: #8c2a1c;
+    --shadow: rgba(0, 0, 0, 0.6);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--surface);
+  }
+
+  body {
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    background: radial-gradient(ellipse 900px 600px at 50% -10%, var(--glow), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  }
+
+  .folder {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 620px;
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: 3px;
+    box-shadow: 0 18px 40px -12px var(--shadow), 0 2px 0 var(--line);
+    padding: 44px 40px 32px;
+    transform: rotate(-0.35deg);
+  }
+
+  .folder-tab {
+    position: absolute;
+    top: -22px;
+    left: 36px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-bottom: none;
+    padding: 6px 18px 20px;
+    border-radius: 6px 6px 0 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+  }
+
+  .eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--accent-ink);
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 10px;
+    margin: 0 0 4px;
+  }
+
+  .title {
+    font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 9vw, 4rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+    margin: 10px 0 14px;
+  }
+
+  .lede {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 0 10px;
+  }
+
+  .field-label,
+  .exhibit-label,
+  .threat-label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: var(--ink-soft);
+  }
+
+  .field-label {
+    margin: 22px 0 6px;
+  }
+
+  .field {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1.05rem;
+    padding: 10px 4px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    color: var(--ink);
+    outline: none;
+  }
+
+  .field::placeholder {
+    color: var(--ink-soft);
+    opacity: 0.7;
+  }
+
+  .field:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translateX(-1px);
+    }
+    20%,
+    80% {
+      transform: translateX(2px);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translateX(-4px);
+    }
+    40%,
+    60% {
+      transform: translateX(4px);
+    }
+  }
+
+  .field.shake {
+    animation: shake 0.4s;
+    border-bottom-color: var(--accent);
+  }
+
+  .btn {
+    font-family: "Courier Prime", monospace;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+    padding: 14px 22px;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--surface);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    margin-top: 26px;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .disclaimer {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    margin-top: 22px;
+    border-top: 1px dashed var(--line);
+    padding-top: 12px;
+  }
+
+  .quiz-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 26px;
+  }
+
+  .progress-track {
+    height: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--ink);
+    transition: width 0.3s ease;
+  }
+
+  .q-num {
+    font-family: "Bebas Neue", sans-serif;
+    color: var(--accent-ink);
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .q-text {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 4px 0 0;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 22px 0;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    background: var(--surface-2);
+    border: 1.5px solid var(--line);
+    border-radius: 2px;
+    padding: 14px 16px;
+    font-family: "Courier Prime", monospace;
+    font-size: 0.95rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+
+  .option:hover {
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  .option:active {
+    transform: scale(0.99);
+  }
+
+  .option:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option-chosen {
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  .option-tag {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .case-status {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  .case-status strong {
+    color: var(--accent-ink);
+  }
+
+  .stamp {
+    display: inline-block;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(1.5rem, 6vw, 2.4rem);
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    border: 4px solid var(--accent);
+    padding: 10px 22px;
+    border-radius: 6px;
+    transform: rotate(-6deg);
+    opacity: 0.9;
+    mix-blend-mode: multiply;
+    margin: 6px 0 22px;
+  }
+
+  .subject-line {
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin: 4px 0 22px;
+  }
+
+  .subject-line strong {
+    color: var(--ink);
+  }
+
+  .threat {
+    margin: 18px 0 26px;
+  }
+
+  .threat-number {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(2.8rem, 10vw, 4rem);
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    margin: 2px 0 10px;
+  }
+
+  .threat-track {
+    height: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .threat-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+  }
+
+  .verdict-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+
+  .verdict-blurb {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  .actions .btn {
+    flex: 1 1 180px;
+    margin-top: 0;
+  }
+
+  .folder-inner > * {
+    animation: fadeSlideIn 0.35s ease both;
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .folder {
+      padding: 32px 22px 24px;
+    }
+  }
+</style>
+
+<div class="folder">
+  <div class="folder-tab" id="tabLabel">CASE FILE</div>
+  <div class="folder-inner" id="app"></div>
+</div>
+
+<script>
+  (function () {
+    var questions = [
+      {
+        text: "Do You Sleep With Socks On?",
+        options: [
+          { text: "Never!", pts: 10 },
+          { text: "When I'm Sick", pts: 8 },
+          { text: "A few Times A Year", pts: 5 },
+          { text: "Every Night, It's How I Sleep!", pts: 0 }
+        ]
+      },
+      {
+        text: "Do You Use Zyns/Vape?",
+        options: [
+          { text: "No To Both.", pts: 10 },
+          { text: "I Love Zyns!", pts: 5 },
+          { text: "I Love My Vape!", pts: 5 },
+          { text: "I Love Both!", pts: 0 }
+        ]
+      },
+      {
+        text: "When Making Cereal, What Comes First?",
+        options: [
+          { text: "Milk", pts: 0 },
+          { text: "Cereal", pts: 10 }
+        ]
+      },
+      {
+        text: "Do You Sleep In Silence Or With Noise?",
+        options: [
+          { text: "Silence", pts: 0 },
+          { text: "Noise Machine", pts: 10 },
+          { text: "Loud Fan", pts: 10 },
+          { text: "TV", pts: 8 }
+        ]
+      },
+      {
+        text: "How Do You Put On Shoes?",
+        options: [
+          { text: "Sock-Shoe-Sock-Shoe", pts: 3 },
+          { text: "Sock-Sock-Shoe-Shoe", pts: 10 },
+          { text: "I Don't Wear Socks With Shoes", pts: 0 },
+          { text: "What Are Shoes?", pts: 0 }
+        ]
+      },
+      {
+        text: "Do You Wear Matching PJs To Sleep?",
+        options: [
+          { text: "Couldn't Be Me", pts: 10 },
+          { text: "Only On Special Occasions (Holidays/Parties)", pts: 5 },
+          { text: "When Other People Are Around (Vacation/Family Trips)", pts: 5 },
+          { text: "No, But I Do Own Some", pts: 3 }
+        ]
+      },
+      {
+        text: "How Do You Wash Your Legs?",
+        options: [
+          { text: "I Scrub Them", pts: 10 },
+          { text: "The Soap Runoff Will Suffice", pts: 5 },
+          { text: "My Legs Don't Get Dirty", pts: 0 },
+          { text: "You're Supposed To Wash Your Legs?", pts: 0 }
+        ]
+      },
+      {
+        text: "How Do You Consume Ice Cream?",
+        options: [
+          { text: "I Bite It With My Front Teeth.", pts: 3 },
+          { text: "I Lick It.", pts: 10 },
+          { text: "I Nibble it With My Lips (The Cold Hurts My Teeth)", pts: 10 },
+          { text: "I Let It Melt In My Mouth", pts: 0 }
+        ]
+      },
+      {
+        text: "How Do You Eat A KitKat?",
+        options: [
+          { text: "I Break Off Each Piece", pts: 10 },
+          { text: "I Just Eat It Whole", pts: 5 },
+          { text: "I Come In From The Side", pts: 1 },
+          { text: "I Smash It With My Hand And Snort It", pts: 0 }
+        ]
+      },
+      {
+        text: "When Using A Public Bathroom, How Do You Exit?",
+        options: [
+          { text: "I Grab The Handle With My Bare Hand", pts: 0 },
+          { text: "I Grab The Handle With Paper Towel", pts: 10 },
+          { text: "I Wait For Someone Else To Leave and Run Out Behind Them", pts: 1 },
+          { text: "I've Been Stuck In This Bathroom For 6 Years", pts: 0 }
+        ]
+      }
+    ];
+
+    var TIERS = [
+      {
+        max: 20,
+        title: "GOLDEN RETRIEVER",
+        blurb: function (n) {
+          return n + " scored so low we double-checked the pen was working. Aggressively wholesome. Probably waves at strangers' dogs.";
+        }
+      },
+      {
+        max: 40,
+        title: "MOSTLY HARMLESS",
+        blurb: function (n) {
+          return "A few quirks, nothing actionable. " + n + " just really cares how the towels are folded.";
+        }
+      },
+      {
+        max: 60,
+        title: "SUSPICIOUSLY NORMAL",
+        blurb: function (n) {
+          return n + " answered every question exactly the way a totally normal person would. That, detectives note, is the suspicious part.";
+        }
+      },
+      {
+        max: 80,
+        title: "PERSON OF INTEREST",
+        blurb: function (n) {
+          return n + "'s file has been flagged for further review: a disturbingly precise KitKat technique, matching pajama sets, and paper towels used as tactical equipment.";
+        }
+      },
+      {
+        max: 101,
+        title: "CERTIFIED ENIGMA",
+        blurb: function (n) {
+          return "We ran out of questions before we ran out of concerns. " + n + " remains, and will likely always remain, a mystery.";
+        }
+      }
+    ];
+
+    var MAX_SCORE = questions.reduce(function (sum, q) {
+      var best = q.options.reduce(function (m, o) {
+        return Math.max(m, o.pts);
+      }, 0);
+      return sum + best;
+    }, 0);
+
+    function rand3() {
+      return Math.floor(100 + Math.random() * 900);
+    }
+    var caseNumber = rand3() + "-" + rand3();
+
+    var state = { screen: "intro", name: "", current: 0, points: [], locked: false };
+
+    var app = document.getElementById("app");
+    var tabLabel = document.getElementById("tabLabel");
+    tabLabel.textContent = "CASE FILE #" + caseNumber;
+
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function escapeHTML(str) {
+      var d = document.createElement("div");
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function pctFromPoints(points) {
+      var sum = points.reduce(function (a, b) {
+        return a + b;
+      }, 0);
+      return Math.round((sum / MAX_SCORE) * 100);
+    }
+
+    function tierFor(pct) {
+      for (var i = 0; i < TIERS.length; i++) {
+        if (pct <= TIERS[i].max) return TIERS[i];
+      }
+      return TIERS[TIERS.length - 1];
+    }
+
+    function render() {
+      if (state.screen === "intro") renderIntro();
+      else if (state.screen === "quiz") renderQuiz();
+      else renderResult();
+    }
+
+    function renderIntro() {
+      app.innerHTML =
+        '<div class="eyebrow">CONFIDENTIAL &middot; SUBJECT EVALUATION FORM</div>' +
+        '<h1 class="title">THE SERIAL<br>KILLER TEST</h1>' +
+        '<p class="lede">A rigorously unscientific psychological evaluation, based entirely on cereal-pouring order, KitKat technique, and vibes.</p>' +
+        '<label class="field-label" for="nameInput">SUBJECT NAME</label>' +
+        '<input id="nameInput" class="field" type="text" placeholder="Full name, or alias" autocomplete="off" maxlength="40" value="' +
+        escapeHTML(state.name) +
+        '" />' +
+        '<button class="btn btn-primary" id="beginBtn" type="button">BEGIN EVALUATION &rarr;</button>' +
+        '<p class="disclaimer">Scientific accuracy: approximately 0%. For entertainment purposes only.</p>';
+
+      var input = document.getElementById("nameInput");
+      var begin = document.getElementById("beginBtn");
+      input.focus();
+
+      function tryBegin() {
+        var val = input.value.trim();
+        if (!val) {
+          input.classList.remove("shake");
+          void input.offsetWidth;
+          input.classList.add("shake");
+          input.placeholder = "Name required to open file";
+          return;
+        }
+        state.name = val;
+        state.screen = "quiz";
+        render();
+      }
+
+      begin.addEventListener("click", tryBegin);
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") tryBegin();
+      });
+    }
+
+    function renderQuiz() {
+      var q = questions[state.current];
+      var pctDone = Math.round((state.current / questions.length) * 100);
+
+      var optionsHTML = q.options
+        .map(function (o, i) {
+          return (
+            '<button class="option" type="button" data-index="' +
+            i +
+            '"><span class="option-tag">' +
+            String.fromCharCode(65 + i) +
+            '</span><span class="option-text">' +
+            escapeHTML(o.text) +
+            "</span></button>"
+          );
+        })
+        .join("");
+
+      app.innerHTML =
+        '<div class="quiz-header"><span class="exhibit-label">EXHIBIT ' +
+        (state.current + 1) +
+        " / " +
+        questions.length +
+        '</span><div class="progress-track"><div class="progress-fill" style="width:' +
+        pctDone +
+        '%"></div></div></div>' +
+        '<p class="q-num">Q' +
+        (state.current + 1) +
+        '.</p>' +
+        '<h2 class="q-text">' +
+        escapeHTML(q.text) +
+        "</h2>" +
+        '<div class="options">' +
+        optionsHTML +
+        "</div>" +
+        '<p class="disclaimer">This evaluation has a scientific accuracy of approximately 0%.</p>';
+
+      state.locked = false;
+      var buttons = app.querySelectorAll(".option");
+      buttons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          selectOption(Number(btn.dataset.index));
+        });
+      });
+    }
+
+    function selectOption(i) {
+      if (state.locked) return;
+      state.locked = true;
+
+      var q = questions[state.current];
+      state.points[state.current] = q.options[i].pts;
+
+      var buttons = app.querySelectorAll(".option");
+      if (buttons[i]) buttons[i].classList.add("option-chosen");
+
+      function advance() {
+        if (state.current < questions.length - 1) {
+          state.current += 1;
+          render();
+        } else {
+          state.screen = "result";
+          render();
+        }
+      }
+
+      if (reduceMotion) advance();
+      else setTimeout(advance, 220);
+    }
+
+    function renderResult() {
+      var pct = pctFromPoints(state.points);
+      var tier = tierFor(pct);
+      var safeName = escapeHTML(state.name);
+
+      app.innerHTML =
+        '<div class="case-status">CASE STATUS: <strong>CLOSED</strong></div>' +
+        '<div class="stamp">' +
+        tier.title +
+        "</div>" +
+        '<p class="subject-line">SUBJECT: <strong>' +
+        safeName +
+        "</strong></p>" +
+        '<div class="threat"><div class="threat-label">THREAT LEVEL</div>' +
+        '<div class="threat-number" id="threatNumber">0%</div>' +
+        '<div class="threat-track"><div class="threat-fill" id="threatFill"></div></div></div>' +
+        '<h2 class="verdict-title">' +
+        tier.title +
+        "</h2>" +
+        '<p class="verdict-blurb">' +
+        tier.blurb(safeName) +
+        "</p>" +
+        '<div class="actions">' +
+        '<button class="btn btn-primary" id="retakeBtn" type="button">RETAKE EVALUATION</button>' +
+        '<button class="btn btn-ghost" id="copyBtn" type="button">COPY FILE SUMMARY</button>' +
+        "</div>" +
+        '<p class="disclaimer">100% for fun. 0% science. Please don\'t diagnose your coworkers with this.</p>';
+
+      animateThreat(pct);
+
+      document.getElementById("retakeBtn").addEventListener("click", function () {
+        state.screen = "intro";
+        state.current = 0;
+        state.points = [];
+        render();
+      });
+
+      document.getElementById("copyBtn").addEventListener("click", function (e) {
+        var summary =
+          "THE SERIAL KILLER TEST -- CASE FILE #" +
+          caseNumber +
+          "\nSUBJECT: " +
+          state.name +
+          "\nTHREAT LEVEL: " +
+          pct +
+          "%\nVERDICT: " +
+          tier.title +
+          "\n" +
+          tier.blurb(state.name);
+
+        var btn = e.currentTarget;
+        var original = btn.textContent;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(summary)
+            .then(function () {
+              btn.textContent = "COPIED";
+              setTimeout(function () {
+                btn.textContent = original;
+              }, 1600);
+            })
+            .catch(function () {});
+        }
+      });
+    }
+
+    function animateThreat(target) {
+      var numEl = document.getElementById("threatNumber");
+      var fillEl = document.getElementById("threatFill");
+
+      if (reduceMotion) {
+        numEl.textContent = target + "%";
+        fillEl.style.width = target + "%";
+        return;
+      }
+
+      var duration = 900;
+      var start = performance.now();
+
+      function tick(now) {
+        var t = Math.min(1, (now - start) / duration);
+        var eased = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(eased * target);
+        numEl.textContent = val + "%";
+        fillEl.style.width = val + "%";
+        if (t < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (state.screen !== "quiz" || state.locked) return;
+      var k = e.key.toLowerCase();
+      var map = { 1: 0, 2: 1, 3: 2, 4: 3, a: 0, b: 1, c: 2, d: 3 };
+      var idx = map[k];
+      if (idx !== undefined && questions[state.current].options[idx]) {
+        selectOption(idx);
+      }
+    });
+
+    render();
+  })();
+</script>
