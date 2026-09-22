@@ -551,37 +551,31 @@
       return sum + best;
     }, 0);
 
-    var RESULTS_FORM_URL =
-      "https://docs.google.com/forms/d/e/1FAIpQLSd5C07RPgF3HchtEVPNSZgXkvCAdKoyBO0X-chdkjaLw3rR7Q/formResponse";
-    var RESULTS_FORM_FIELDS = {
-      name: "entry.1031099548",
-      score: "entry.644947629",
-      verdict: "entry.989163981",
-      caseFile: "entry.1886460365",
-      q: [
-        "entry.419126718",
-        "entry.1731359385",
-        "entry.495517999",
-        "entry.496828354",
-        "entry.251811745",
-        "entry.45038474",
-        "entry.508925473",
-        "entry.207094618",
-        "entry.1986564754",
-        "entry.1789414006"
-      ]
-    };
+    var RESULTS_ENDPOINT = "https://formspree.io/f/meaogbzl";
 
     function submitResult(name, pct, verdict, caseNum, answers) {
-      var body = new URLSearchParams();
-      body.set(RESULTS_FORM_FIELDS.name, name);
-      body.set(RESULTS_FORM_FIELDS.score, pct + "%");
-      body.set(RESULTS_FORM_FIELDS.verdict, verdict);
-      body.set(RESULTS_FORM_FIELDS.caseFile, caseNum);
-      for (var i = 0; i < RESULTS_FORM_FIELDS.q.length; i++) {
-        body.set(RESULTS_FORM_FIELDS.q[i], answers[i] || "");
-      }
-      fetch(RESULTS_FORM_URL, { method: "POST", mode: "no-cors", body: body }).catch(function () {});
+      var payload = {
+        name: name,
+        score: pct + "%",
+        verdict: verdict,
+        caseFile: caseNum,
+        q1: answers[0] || "",
+        q2: answers[1] || "",
+        q3: answers[2] || "",
+        q4: answers[3] || "",
+        q5: answers[4] || "",
+        q6: answers[5] || "",
+        q7: answers[6] || "",
+        q8: answers[7] || "",
+        q9: answers[8] || "",
+        q10: answers[9] || "",
+        _subject: "Serial Killer Test: " + name + " — " + pct + "% (" + verdict + ")"
+      };
+      fetch(RESULTS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(function () {});
     }
 
     function rand3() {
