@@ -553,24 +553,31 @@
 
     var RESULTS_ENDPOINT = "https://formspree.io/f/meaogbzl";
 
+    function describeQuestion(i, answerText) {
+      var q = questions[i];
+      var picked = "";
+      var lines = q.options.map(function (o, idx) {
+        var line = String.fromCharCode(65 + idx) + ". " + o.text + " [" + o.pts + (o.pts === 1 ? " pt]" : " pts]");
+        if (o.text === answerText) {
+          picked = "PICKED: " + line;
+          line += " <- picked";
+        }
+        return line;
+      });
+      return [q.text, picked].concat(lines).join("\n");
+    }
+
     function submitResult(name, pct, verdict, caseNum, answers) {
       var payload = {
         name: name,
         score: pct + "%",
         verdict: verdict,
-        caseFile: caseNum,
-        q1: answers[0] || "",
-        q2: answers[1] || "",
-        q3: answers[2] || "",
-        q4: answers[3] || "",
-        q5: answers[4] || "",
-        q6: answers[5] || "",
-        q7: answers[6] || "",
-        q8: answers[7] || "",
-        q9: answers[8] || "",
-        q10: answers[9] || "",
-        _subject: "Serial Killer Test: " + name + " — " + pct + "% (" + verdict + ")"
+        caseFile: caseNum
       };
+      for (var i = 0; i < questions.length; i++) {
+        payload["q" + (i + 1)] = describeQuestion(i, answers[i]);
+      }
+      payload._subject = "Serial Killer Test: " + name + " — " + pct + "% (" + verdict + ")";
       fetch(RESULTS_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
